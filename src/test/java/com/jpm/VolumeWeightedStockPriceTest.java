@@ -32,6 +32,7 @@ public class VolumeWeightedStockPriceTest {
 		StockTrade trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 16*60*1000))
 				.quantity(10)
+				.type(StockTrade.TYPE.BUY)
 				.tradedPrice(120.0).build();
 		
 		tradeRepository.captureTrade(trade);
@@ -39,6 +40,7 @@ public class VolumeWeightedStockPriceTest {
 		trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 14*60*1000))
 				.quantity(20)
+				.type(StockTrade.TYPE.BUY)
 				.tradedPrice(121.0).build();
 		
 		tradeRepository.captureTrade(trade);
@@ -46,6 +48,7 @@ public class VolumeWeightedStockPriceTest {
 		trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 7*60*1000))
 				.quantity(10)
+				.type(StockTrade.TYPE.BUY)
 				.tradedPrice(122.0).build();
 		
 		tradeRepository.captureTrade(trade);
@@ -53,6 +56,7 @@ public class VolumeWeightedStockPriceTest {
 		trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 5*60*1000))
 				.quantity(5)
+				.type(StockTrade.TYPE.SELL)
 				.tradedPrice(123.0).build();
 		
 		tradeRepository.captureTrade(trade);
@@ -73,6 +77,7 @@ public class VolumeWeightedStockPriceTest {
 		StockTrade trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 16*60*1000))
 				.quantity(10)
+				.type(StockTrade.TYPE.BUY)
 				.tradedPrice(120.0).build();
 		
 		tradeRepository.captureTrade(trade);
@@ -81,6 +86,7 @@ public class VolumeWeightedStockPriceTest {
 		trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 25*60*1000))
 				.quantity(20)
+				.type(StockTrade.TYPE.SELL)
 				.tradedPrice(121.0).build();
 		
 		tradeRepository.captureTrade(trade);
@@ -107,6 +113,7 @@ public class VolumeWeightedStockPriceTest {
 		StockTrade trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 25*60*1000))
 				.quantity(-20)
+				.type(StockTrade.TYPE.BUY)
 				.tradedPrice(121.0).build();
 		
 		thrown.expect(AssertionError.class);
@@ -124,6 +131,7 @@ public class VolumeWeightedStockPriceTest {
 		StockTrade trade = new StockTrade.Builder().stock(stock)
 				.timestamp(new Date(System.currentTimeMillis() - 25*60*1000))
 				.quantity(20)
+				.type(StockTrade.TYPE.BUY)
 				.tradedPrice(-21.0).build();
 		
 		thrown.expect(AssertionError.class);
