@@ -12,11 +12,15 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
+import com.jpm.storyrunners.DividendYieldStoriesRunnerApp;
+import com.jpm.storyrunners.GBCEIndexPriceStoriesRunnerApp;
+import com.jpm.storyrunners.VolumeTradedStockPriceStoriesRunnerApp;
+
 public class JBehaveStoriesTest extends JUnitStories {
 	 
     public JBehaveStoriesTest() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-                .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeouts("900");
+                .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(1).useStoryTimeouts("900");
     }
  
     @Override
@@ -32,7 +36,9 @@ public class JBehaveStoriesTest extends JUnitStories {
  
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new InstanceStepsFactory(configuration(), new DividendYieldStoriesRunnerApp());
+        return new InstanceStepsFactory(configuration(), new DividendYieldStoriesRunnerApp(), 
+        		new VolumeTradedStockPriceStoriesRunnerApp(),
+        		new GBCEIndexPriceStoriesRunnerApp());
     }
      
     @Override
