@@ -1,11 +1,15 @@
 package com.jpm;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.jmp.test.dto.Stock;
 import com.jmp.test.dto.Stock.TYPE;
@@ -58,7 +62,7 @@ public class VolumeWeightedStockPriceTest {
 	}
 	
 	@Test
-	public void negativeeTests() throws Exception {
+	public void negativeTests() throws Exception {
 		
 		TradeRepository tradeRepository = new TradeRepository();
 		
@@ -88,5 +92,42 @@ public class VolumeWeightedStockPriceTest {
 		
 		//// No trades captured for GIN, expecting null price
 		assertNull(tradeRepository.getVolumeWeightedPrice("GIN"));
+	}
+	
+	@Rule
+    public ExpectedException thrown= ExpectedException.none();
+	
+	@Test
+	public void quantityValidationTest() {
+		TradeRepository tradeRepository = new TradeRepository();
+		
+		Stock stock = new Stock.Builder().symbol("TEA").type(TYPE.COMMON)
+				.dividend(0.0).parValue(100.0).build();
+		
+		StockTrade trade = new StockTrade.Builder().stock(stock)
+				.timestamp(new Date(System.currentTimeMillis() - 25*60*1000))
+				.quantity(-20)
+				.tradedPrice(121.0).build();
+		
+		thrown.expect(AssertionError.class);
+		thrown.expectMessage("Trade Quantity must be greater than zero");
+		tradeRepository.captureTrade(trade);		
+	}
+	
+	@Test
+	public void priceValidationTest() {
+		TradeRepository tradeRepository = new TradeRepository();
+		
+		Stock stock = new Stock.Builder().symbol("TEA").type(TYPE.COMMON)
+				.dividend(0.0).parValue(100.0).build();
+		
+		StockTrade trade = new StockTrade.Builder().stock(stock)
+				.timestamp(new Date(System.currentTimeMillis() - 25*60*1000))
+				.quantity(20)
+				.tradedPrice(-21.0).build();
+		
+		thrown.expect(AssertionError.class);
+		thrown.expectMessage("Trade Price must be greater than zero");
+		tradeRepository.captureTrade(trade);		
 	}	
 }

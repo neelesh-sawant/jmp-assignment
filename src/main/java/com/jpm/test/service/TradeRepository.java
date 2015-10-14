@@ -53,6 +53,10 @@ public class TradeRepository {
 		if (null == trade.getTradedPrice()) {
 			throw new AssertionError("Null Trade Price supplied");
 		}
+		
+		if (trade.getTradedPrice() <= 0) {
+			throw new AssertionError("Trade Price must be greater than zero");
+		}		
 
 		if (trade.getQuantity() <= 0) {
 			throw new AssertionError("Trade Quantity must be greater than zero");
