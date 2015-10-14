@@ -10,6 +10,13 @@ import com.jmp.test.dto.StockTrade;
 import com.jpm.test.util.Calc;
 
 public class TradeRepository {
+	
+	/*
+	 * Service for 
+	 * 1) capturing Trades
+	 * 2) computing Volume Weighted Price for a given stock symbol
+	 * 3) computing GBCE All Share Index Price
+	 */
 
 	private static final long FIFTEEN_MINS = 15 * 60 * 1000;
 
@@ -19,12 +26,22 @@ public class TradeRepository {
 
 	public void captureTrade(StockTrade trade) {
 		validate(trade);
+		
 		tradesStore.add(trade);
+		
+		/*
+		 * Assumption: 
+		 * trades are submitted in order of their execution timestamp, 
+		 * thus the lastTradedPriceMap would always contain the latest price for a given symbol 
+		 */
 		lastTradedPriceMap.put(trade.getStock().getSymbol(),
 				trade.getTradedPrice());
 	}
 
 	private void validate(StockTrade trade) {
+		/*
+		 * TODO: Throw a proper business exception instead of AssertionError
+		 * */
 		if (null == trade) {
 			throw new AssertionError("Null trade supplied");
 		}

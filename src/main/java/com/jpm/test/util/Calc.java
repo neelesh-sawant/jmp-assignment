@@ -5,16 +5,20 @@ import java.util.Collection;
 import com.jmp.test.dto.Stock;
 
 public class Calc {
+	
+	/*
+	 * Utility class for applying various formulae
+	 */
 
 	public static double calculateDividendYield(Stock stock, Double price) {
 		switch (stock.getType()) {
 		case COMMON:
-			if (stock.getLastDividend() != null && price != null) {
+			if (stock.getLastDividend() != null && price != null && price > 0) {
 				return stock.getLastDividend() / price;
 			}
 		case PREFERRED:
 			if (stock.getFixedDividendRate() != null
-					&& stock.getParValue() != null && price != null) {
+					&& stock.getParValue() != null && price != null && price > 0) {
 				return (stock.getFixedDividendRate() * stock.getParValue())
 						/ price;
 			}
