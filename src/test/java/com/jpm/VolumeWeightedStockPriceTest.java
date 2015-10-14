@@ -3,6 +3,7 @@ package com.jpm;
 import static org.junit.Assert.*;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.junit.Test;
 
@@ -23,30 +24,69 @@ public class VolumeWeightedStockPriceTest {
 		Stock stock = new Stock.Builder().symbol("TEA").type(TYPE.COMMON)
 				.dividend(0.0).parValue(100.0).build();
 
+		/// 16 mins older trade, shouldn't be considered in the volume-weighted price
 		StockTrade trade = new StockTrade.Builder().stock(stock)
-				.timestamp(sdf.parse("10/14/2015 12:35:10")).quantity(10)
+				.timestamp(new Date(System.currentTimeMillis() - 16*60*1000))
+				.quantity(10)
 				.tradedPrice(120.0).build();
 		
 		tradeRepository.captureTrade(trade);
 		
 		trade = new StockTrade.Builder().stock(stock)
-				.timestamp(sdf.parse("10/14/2015 12:36:10")).quantity(20)
+				.timestamp(new Date(System.currentTimeMillis() - 14*60*1000))
+				.quantity(20)
 				.tradedPrice(121.0).build();
 		
 		tradeRepository.captureTrade(trade);
 		
 		trade = new StockTrade.Builder().stock(stock)
-				.timestamp(sdf.parse("10/14/2015 12:55:10")).quantity(10)
+				.timestamp(new Date(System.currentTimeMillis() - 7*60*1000))
+				.quantity(10)
 				.tradedPrice(122.0).build();
 		
 		tradeRepository.captureTrade(trade);
 		
 		trade = new StockTrade.Builder().stock(stock)
-				.timestamp(sdf.parse("10/14/2015 12:55:10")).quantity(5)
+				.timestamp(new Date(System.currentTimeMillis() - 5*60*1000))
+				.quantity(5)
 				.tradedPrice(123.0).build();
 		
-		tradeRepository.captureTrade(trade);		
-		assertNull(tradeRepository.getVolumeWeightedPrice("TEA"));
-		//assertEquals(122.33, tradeRepository.getVolumeWeightedPrice("TEA"),0.01);
+		tradeRepository.captureTrade(trade);
+		
+		assertNotNull(tradeRepository.getVolumeWeightedPrice("TEA"));
+		assertEquals(121.571, tradeRepository.getVolumeWeightedPrice("TEA"),0.001);
 	}
+	
+	@Test
+	public void negativeeTests() throws Exception {
+		
+		TradeRepository tradeRepository = new TradeRepository();
+		
+		Stock stock = new Stock.Builder().symbol("TEA").type(TYPE.COMMON)
+				.dividend(0.0).parValue(100.0).build();
+
+		/// 16 mins older trade, shouldn't be considered in the volume-weighted price
+		StockTrade trade = new StockTrade.Builder().stock(stock)
+				.timestamp(new Date(System.currentTimeMillis() - 16*60*1000))
+				.quantity(10)
+				.tradedPrice(120.0).build();
+		
+		tradeRepository.captureTrade(trade);
+		
+		/// 25 mins older trade, shouldn't be considered in the volume-weighted price
+		trade = new StockTrade.Builder().stock(stock)
+				.timestamp(new Date(System.currentTimeMillis() - 25*60*1000))
+				.quantity(20)
+				.tradedPrice(121.0).build();
+		
+		tradeRepository.captureTrade(trade);
+		
+		
+		//// No trades in last 15 mins for TEA, expecting null price
+		assertNull(tradeRepository.getVolumeWeightedPrice("TEA"));
+		
+		
+		//// No trades captured for GIN, expecting null price
+		assertNull(tradeRepository.getVolumeWeightedPrice("GIN"));
+	}	
 }
